@@ -1,0 +1,9 @@
+# Ignore Python cache
+__pycache__/
+.qodo/
+
+# Ignore environment folders
+.env
+om_env/
+
+script_activate.txt
