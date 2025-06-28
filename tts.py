@@ -4,7 +4,7 @@ Assistant = pyttsx3.init('sapi5')
 voices = Assistant.getProperty('voices')
 #print(voices)
 Assistant.setProperty('voice' , voices[1].id)
-Assistant.setProperty('rate', 200)
+Assistant.setProperty('rate', 150)
 
 def speak(audio):
     print("   ")
