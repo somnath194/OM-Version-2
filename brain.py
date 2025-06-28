@@ -31,10 +31,3 @@ chain = prompt | model | parser
 def brain_funcrion(user_quary):
     response = chain.invoke({'quary':user_quary})
     return response
-
-# while True:
-#     user_quary = input('You: ')
-#     if user_quary == 'exit':
-#         break
-#     response = chain.invoke({'quary':user_quary})
-#     print(response)
