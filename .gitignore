@@ -7,3 +7,5 @@ __pycache__/
 om_env/
 
 script_activate.txt
+
+test.py

@@ -4,7 +4,7 @@ import time
 import pygetwindow as gw
 from flags import exit_event,exit_commands,sleep_commands,wake_up_commands
 from stt import run as run_flask
-from brain import brain_funcrion
+from brain import brain_function,chat_history
 from tts import speak
 
 file_path = "D:\\programs\\OM Version 2\\SpeechRecogonisition.txt"
@@ -61,6 +61,7 @@ try:
         if transcript in exit_commands:
             exit_event.set()
             speak("Shutting down...")
+            print(chat_history)
             break
 
         # Manual sleep command
@@ -88,7 +89,7 @@ try:
         if is_awake and transcript != last_transcript:
             last_command_time = time.time()
             last_transcript = transcript
-            output = brain_funcrion(transcript)
+            output = brain_function(transcript)
             # executor.execute(json.loads(output))
             speak(output)
 
