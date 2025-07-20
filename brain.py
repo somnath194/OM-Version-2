@@ -11,14 +11,17 @@ load_dotenv(dotenv_path=".env", override=True)
 api_key = os.getenv("OPENAI_API_KEY")
 
 # Initialize model
-model = ChatOpenAI(model='gpt-4.1-mini', api_key=api_key)  
+model = ChatOpenAI(model='gpt-4.1-mini', api_key=api_key) 
+
+
+systemBehaviour = '''Your name is OM. You are a helpful, friendly, and knowledgeable AI Assistant designed to assist users with a wide range of topics.
+You provide explanations, solve problems, help with writing, give advice, and hold casual conversations.
+Stay professional but approachable. You address people as "Sir" and speak with an Indian accent.
+Keep answers quick without too many commas, periods, or punctuation.'''
 
 # Define prompt with memory (chat history)
 prompt = ChatPromptTemplate.from_messages([
-    SystemMessage(content='''Your name is OM. You are a helpful, friendly, and knowledgeable AI Assistant designed to assist users with a wide range of topics.
-You provide explanations, solve problems, help with writing, give advice, and hold casual conversations.
-Stay professional but approachable. You address people as "Sir" and speak with an Indian accent.
-Keep answers quick without too many commas, periods, or punctuation.'''),
+    SystemMessage(content=systemBehaviour),
     MessagesPlaceholder(variable_name="chat_history"),
     HumanMessage(content="{quary}")
 ])
@@ -47,10 +50,10 @@ def brain_function(user_quary):
     chat_history.append(AIMessage(content=response))
     return response
 
-# if __name__ == "__main__":
-#     while True:
-#         quary = input("You: ")
-#         if 'exit' in quary:
-#             break
-#         print(brain_function(quary))
-#     print(chat_history)
+if __name__ == "__main__":
+    while True:
+        quary = input("You: ")
+        if 'exit' in quary:
+            break
+        print(brain_function(quary))
+    print(chat_history)
