@@ -22,8 +22,8 @@ Keep answers quick without too many commas, periods, or punctuation.'''
 # Define prompt with memory (chat history)
 prompt = ChatPromptTemplate.from_messages([
     SystemMessage(content=systemBehaviour),
-    MessagesPlaceholder(variable_name="chat_history"),
-    HumanMessage(content="{quary}")
+    MessagesPlaceholder(variable_name="chat_history")
+    # HumanMessage(content="{quary}")
 ])
 
 # Create the parser
@@ -42,7 +42,7 @@ def brain_function(user_quary):
     
     # Run chain with chat history
     response = chain.invoke({
-        "quary": user_quary,
+        # "quary": user_quary,
         "chat_history": chat_history
     })
     

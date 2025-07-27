@@ -13,7 +13,7 @@ vectorstore = FAISS.load_local(
     allow_dangerous_deserialization=True
 )
 
-query = 'tell me my phone no'
+query = 'turn on outdoor light and tell me my gmailid'
 results = vectorstore.similarity_search_with_score(query, k=5)
 for doc, score in results:
     print(f"Score: {score}")
