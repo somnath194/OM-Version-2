@@ -1,0 +1,18 @@
+{
+  "functionName": "SetLedStripMode",
+  "description": "Changes the LED strip to a specific lighting mode such as music sync or sunlight mode.",
+  "isAsync": false,
+  "arguments": {
+    "stripMode": {
+      "type": "string",
+      "allowedValues": ["music sync", "workMode", "shootingMode"],
+      "description": "The mode to set for the LED strip. Examples: music sync, workMode, shootingMode"
+    }
+  },
+  "group": "homeAutomation",
+  "examples": [
+    "set led strip to music sync mode",
+    "change led strip mode to work",
+    "set led strip as shootingMode"
+  ]
+}

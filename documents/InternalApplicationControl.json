@@ -1,0 +1,24 @@
+{
+  "functionName": "InternalApplicationControl",
+  "description": "Opens a built-in or system application on the specified device, such as camera, calculator, settings, etc.",
+  "isAsync": false,
+  "arguments": {
+    "device": {
+      "type": "string",
+      "allowedValues": ["phone", "pc", "tab", "laptop"],
+      "description": "The device on which the internal application should be opened. Can be phone, PC, tablet, or laptop."
+    },
+    "applicationName": {
+      "type": "string",
+      "allowedValues": [],
+      "description": "The name of the internal application to open. Examples include camera, calculator, settings, file manager, gallery, terminal, notepad etc."
+    }
+  },
+  "group": "deviceAutomation",
+  "examples": [
+    "open camera on phone",
+    "open calculator on pc",
+    "open settings on tab",
+    "open file manager on my laptop"
+  ]
+}

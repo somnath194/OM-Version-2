@@ -1,0 +1,28 @@
+{
+  "functionName": "ToggleComputerVision",
+  "description": "Activates or deactivates specific computer vision features such as face recognition, OCR, or live camera feeds.",
+  "isAsync": false,
+  "arguments": {
+    "feature": {
+      "type": "string",
+      "allowedValues": [
+        "face recognition", "cctv feed", "pc camera feed", "phone camera feed",
+        "tab camera feed", "hand mouse mode", "objection detection mode", "ocr detection mode"
+      ],
+      "description": "The computer vision feature to control. For example: face recognition, pc camera feed, hand mouse mode, etc."
+    },
+    "state": {
+      "type": "string",
+      "allowedValues": ["activate", "deactivate"],
+      "description": "Determines whether to activate or deactivate the selected computer vision feature."
+    }
+  },
+  "group": "visionControl",
+  "examples": [
+    "activate face recognition",
+    "deactivate pc camera feed",
+    "turn on hand mouse mode",
+    "turn off ocr detection mode",
+    "activate objection detection mode"
+  ]
+}

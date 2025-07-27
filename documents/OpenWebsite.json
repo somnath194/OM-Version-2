@@ -1,0 +1,24 @@
+{
+  "functionName": "OpenWebsite",
+  "description": "Opens a specified website on a chosen device.",
+  "isAsync": false,
+  "arguments": {
+     "device": {
+      "type": "string",
+      "allowedValues": ["phone", "pc", "tab", "laptop"],
+      "description": "The device on which the website should be opened. Can be phone, PC, tablet, or laptop."
+    },
+    "websiteUrl": {
+      "type": "string",
+      "allowedValues": [],
+      "description": "The full URL of the website to open. For example: https://youtube.com"
+    }
+  },
+  "group": "deviceAutomation",
+  "examples": [
+    "open youtube on my laptop",
+    "open google.com on pc",
+    "open facebook on phone",
+    "open https://openai.com on tab"
+  ]
+}

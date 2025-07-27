@@ -1,0 +1,28 @@
+{
+  "functionName": "AppControl",
+  "description": "Controls applications on a device such as opening, closing, minimizing, or maximizing apps.",
+  "isAsync": false,
+  "arguments": {
+    "device": {
+      "type": "string",
+      "allowedValues": ["phone", "pc", "tab", "laptop"],
+      "description": "Specifies the device on which the application should be controlled. Can be phone, PC, tablet, or laptop."
+    },
+    "applicationControlType": {
+      "type": "string",
+      "allowedValues": ["open", "close", "minimize", "maximize"],
+      "description": "Type of control action to perform on the application. Supported actions: open, close, minimize, maximize."
+    },
+    "applicationName": {
+      "type": "string",
+      "allowedValues": [],
+      "description": "The name of the application to be controlled. For example: Chrome, WhatsApp, Arduino IDE, Paint, etc."
+    }
+  },
+  "group": "deviceAutomation",
+  "examples": [
+    "open chrome on my laptop",
+    "minimize whatsapp on pc",
+    "maximize the arduino on pc then open paint"
+  ]
+}

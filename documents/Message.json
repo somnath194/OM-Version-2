@@ -1,0 +1,34 @@
+{
+  "functionName": "Message",
+  "description": "Sends a text message to a specific person using a selected platform on the specified device.",
+  "isAsync": false,
+  "arguments": {
+    "device": {
+      "type": "string",
+      "allowedValues": ["phone", "pc", "tab", "laptop"],
+      "description": "The device to be used for sending the message. Can be phone, PC, tablet, or laptop."
+    },
+    "personName": {
+      "type": "string",
+      "allowedValues": [],
+      "description": "The name of the person to send the message to. For example: Mom, John, Team Lead, etc."
+    },
+    "messageMedia": {
+      "type": "string",
+      "allowedValues": ["sim", "whatsapp","instagram"],
+      "description": "The platform or medium to send the message through. Examples: SIM, WhatsApp, Instagram etc."
+    },
+    "messageContent": {
+      "type": "string",
+      "allowedValues": [],
+      "description": "The actual message text to be sent. For example: 'Meeting is at 3 PM', 'Happy Birthday!', etc."
+    }
+  },
+  "group": "communicationControl",
+  "examples": [
+    "send happy birthday to mom on whatsapp from phone",
+    "message team lead that meeting is delayed via slack on laptop",
+    "text sundatam using sim from pc",
+    "send 'I'll be late' to dad on insta using tab"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "functionName": "SetLedStripSegment",
+  "description": "Sets the color and brightness of a specific LED strip segment.",
+  "isAsync": false,
+  "arguments": {
+    "segmentName": {
+      "type": "string",
+      "allowedValues": [
+        "ceiling", "front almary", "back almary", "ganesha almary", "shiva almary",
+        "behind the money plant", "under pc table", "under laptop table", "all"
+      ],
+      "description": "The LED strip segment to control. Use 'all' to apply settings to all segments."
+    },
+    "rgbColourCode": {
+      "type": "string",
+      "allowedValues": [],
+      "description": "The RGB color code to set as value like [255,0,0(list)"
+    },
+    "brightnessValue": {
+      "type": "integer",
+      "allowedValues": [],
+      "description": "Brightness level to be set. map the brightness value to 0-255(8bit) from 0-100% and pass in brightnessValue argument."
+    }
+  },
+  "group": "homeAutomation",
+  "examples": [
+    "set ceiling to red at full brightness",
+    "set front almary to blue with half brightness",
+    "set all to white at max brightness",
+    "set behind the money plant to green and brightness 200"
+  ]
+}

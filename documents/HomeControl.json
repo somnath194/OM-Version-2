@@ -1,0 +1,29 @@
+{
+  "functionName": "HomeControl",
+  "description": "Controls smart home appliances by turning them on or off.",
+  "isAsync": false,
+  "arguments": {
+    "controlledAppliances": {
+      "type": "string",
+      "allowedValues": [
+        "bedroom light", "bedroom fan", "bedroom bulb", "bathroom light", "stair light",
+        "outdoor light", "outdoor camera", "pc", "home theater", "main led",
+        "side led", "raspberry pi", "soldering iron"
+      ],
+      "description": "The appliance to control. For example: bedroom light, outdoor camera, raspberry pi, etc."
+    },
+    "controlledState": {
+      "type": "string",
+      "allowedValues": ["on", "off"],
+      "description": "The state to set the appliance to — either on or off."
+    }
+  },
+  "group": "homeAutomation",
+  "examples": [
+    "turn on bedroom light",
+    "switch off the bathroom light and turn on side led",
+    "turn on raspberry pi",
+    "switch off home theater",
+    "turn on soldering iron"
+  ]
+}

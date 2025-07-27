@@ -1,0 +1,24 @@
+{
+  "functionName": "GetDeviceInfo",
+  "description": "Fetch specific system or network information from a given device such as IP address, current location, or internet speed.",
+  "isAsync": false,
+  "arguments": {
+    "device": {
+      "type": "string",
+      "allowedValues": ["pc", "laptop", "phone", "tab"],
+      "description": "The device from which the information should be fetched . Can be PC, laptop, phone, or tab."
+    },
+    "informationType": {
+      "type": "string",
+      "allowedValues": ["ip address", "location", "internet speed"],
+      "description": "The type of information to retrieve. For example: IP address, current location, or internet speed."
+    }
+  },
+  "group": "deviceControl",
+  "examples": [
+    "what's the ip address of my laptop",
+    "check location on phone",
+    "get internet speed on tab",
+    "show me the ip address of pc"
+  ]
+}

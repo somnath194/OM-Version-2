@@ -1,0 +1,29 @@
+{
+  "functionName": "PerformSearch",
+  "description": "Performs a search on the specified platform such as Google, YouTube, or within the device itself.",
+  "isAsync": false,
+  "arguments": {
+    "device": {
+      "type": "string",
+      "allowedValues": ["pc", "laptop", "phone", "tab"],
+      "description": "The device on which the search should be performed and the results should be displayed."
+    },
+    "searchPlatform": {
+      "type": "string",
+      "allowedValues": ["google", "youtube", "inside device"],
+      "description": "The platform to perform the search on. Examples: Google, YouTube, or inside the device."
+    },
+    "searchContent": {
+      "type": "string",
+      "allowedValues": [],
+      "description": "The content or query to search for. For example: 'how to make pasta', 'latest iphone', 'file manager'."
+    }
+  },
+  "group": "deviceControl",
+  "examples": [
+    "search how to make pasta on google using phone",
+    "look for rrr trailer on youtube using pc",
+    "search documents for resume on laptop",
+    "search inside device for downloaded pdfs on tab"
+  ]
+}

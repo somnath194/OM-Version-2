@@ -1,0 +1,30 @@
+{
+  "functionName": "SystemControl",
+  "description": "Performs system-level actions such as window management, power operations, or keyboard commands on a specified device.",
+  "isAsync": false,
+  "arguments": {
+    "device": {
+      "type": "string",
+      "allowedValues": ["pc", "laptop", "phone", "tab"],
+      "description": "The device on which the system action should be executed. Can be PC, laptop, phone, or tab."
+    },
+    "action": {
+      "type": "string",
+      "allowedValues": [
+        "minimize all window", "minimize current window", "shutdown", "sleep", "restart",
+        "switch window", "pause", "hit enter", "full screen", "hit space", "close browser tab",
+        "select all", "copy", "paste","maximize previous window"
+      ],
+      "description": "The system-level action to perform. Includes power actions, window control, and keyboard inputs."
+    }
+  },
+  "group": "deviceControl",
+  "examples": [
+    "shutdown my laptop",
+    "minimize all window on pc",
+    "put phone to sleep",
+    "press enter on my tab",
+    "copy on my laptop",
+    "restart pc"
+  ]
+}

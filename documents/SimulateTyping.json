@@ -1,0 +1,24 @@
+{
+  "functionName": "SimulateTyping",
+  "description": "Types or pastes a given string on the specified device, simulating keyboard input.",
+  "isAsync": false,
+  "arguments": {
+    "device": {
+      "type": "string",
+      "allowedValues": ["pc", "laptop", "phone", "tab"],
+      "description": "The device on which the string should be typed. Can be PC, laptop, phone, or tab."
+    },
+    "typingString": {
+      "type": "string",
+      "allowedValues": [],
+      "description": "The text to type on the device. For example: 'Hello world', 'My name is Om', etc."
+    }
+  },
+  "group": "deviceControl",
+  "examples": [
+    "type hello world on my pc",
+    "write my name is om on laptop",
+    "type meeting at 5 pm on phone",
+    "type this is a test message on tab"
+  ]
+}

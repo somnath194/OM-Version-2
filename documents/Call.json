@@ -1,0 +1,33 @@
+{
+  "functionName": "Call",
+  "description": "Makes a voice or video call to a specific person using the selected media and device.",
+  "isAsync": false,
+  "arguments": {
+    "device": {
+      "type": "string",
+      "allowedValues": ["phone", "pc", "tab", "laptop"],
+      "description": "The device to be used for the call. Can be phone, PC, tablet, or laptop."
+    },
+    "personName": {
+      "type": "string",
+      "allowedValues": [],
+      "description": "The name of the person to call. For example: Mom, surya, sundaram, Dr. Mehta, etc."
+    },
+    "callMedia": {
+      "type": "string",
+      "allowedValues": ["sim", "whatsapp", "insta"],
+      "description": "The platform or medium to use for the call. Examples: SIM, WhatsApp, Instagram etc."
+    },
+    "callType": {
+      "type": "string",
+      "allowedValues": ["voice", "video"],
+      "description": "The type of call to make — either a voice call or a video call."
+    }
+  },
+  "group": "communicationControl",
+  "examples": [
+    "call mom on sim using phone",
+    "video call sister on whatsapp from laptop",
+    "make a voice call to sundaram on Instagram using pc"
+  ]
+}
