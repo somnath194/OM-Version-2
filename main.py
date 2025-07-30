@@ -6,6 +6,7 @@ from flags import exit_event,exit_commands,sleep_commands,wake_up_commands
 from stt import run as run_flask
 from brain import brain_function,chat_history
 from tts import speak
+import json
 
 file_path = "D:\\programs\\OM Version 2\\SpeechRecogonisition.txt"
 
@@ -14,6 +15,7 @@ SLEEP_TIMEOUT = 180  # 3 minutes in seconds
 
 # States
 is_awake = True
+
 last_command_time = time.time()
 # executor = CommandExecutor()
 
@@ -30,6 +32,17 @@ def wait_and_shutdown():
     exit_event.wait()
     close_chrome()
     requests.post('http://localhost:5000/shutdown')
+
+def handle_response(response_json):
+    conversation_output = None
+    function_actions = []
+    for item in response_json:
+        if "converssion_output" in item:
+            conversation_output = item["converssion_output"]
+        elif item.get("action"):
+            function_actions.append(item)
+
+    return conversation_output, function_actions
 
 # Start Flask and Shutdown Watcher
 threading.Thread(target=run_flask, daemon=True).start()
@@ -90,8 +103,10 @@ try:
             last_command_time = time.time()
             last_transcript = transcript
             output = brain_function(transcript)
+            conv_output, actions = handle_response(json.loads(output))
+            speak(conv_output)
             # executor.execute(json.loads(output))
-            speak(output)
+            print(actions)
 
         if not is_awake:
             speak("I'm Sleeping... Waiting for wake-up command.")
