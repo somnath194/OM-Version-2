@@ -10,7 +10,7 @@
         "outdoor light", "outdoor camera", "pc", "home theater", "main led",
         "side led", "raspberry pi", "soldering iron"
       ],
-      "description": "The appliance to control. For example: bedroom light, outdoor camera, raspberry pi, etc."
+      "description": "The appliance to control. For example: bedroom light, outdoor camera, raspberry pi. Set only one appliance at a time for actions and don't use like 'bedroom light, bedroom fan'. PC also mean for Personal Computer or desktop. stair light also means for siri or staircase light. side led also mean for backside led"
     },
     "controlledState": {
       "type": "string",

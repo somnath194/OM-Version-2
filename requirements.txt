@@ -21,6 +21,8 @@ Flask
 flask-cors
 
 pygetwindow
+paho-mqtt
 
 faiss-cpu
+
 

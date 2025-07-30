@@ -26,6 +26,8 @@ Use the retrieved documents and current conversation to respond appropriately.
 - If the user gives a task or command (like "open light", "play music", etc), return one or more structured `action` items and reply in formality in the converssion_output.
 - If the user mixes both, return both parts.
 - If you confuse about user quary or need extra info for taking an action than feel free to ask 
+- In arguments set only one allowedValues per action not coma seperated allowedValues.
+- You can generate multiple actions for combined quaries.
 
 ## Output Format (strict JSON):
 [
@@ -102,8 +104,8 @@ def brain_function(user_quary):
     results = vectorstore.similarity_search(user_quary, k=6)
     retrieved_doc_msgs = [SystemMessage(content=doc.page_content) for doc in results]
 
-    for doc in results:
-        print(doc.metadata)
+    # for doc in results:
+    #     print(doc.metadata)
 
     # # 🔍 Format prompt before sending to LLM
     # formatted_prompt = prompt.format_messages(

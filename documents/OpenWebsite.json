@@ -14,7 +14,7 @@
       "description": "The full URL of the website to open. For example: https://youtube.com"
     }
   },
-  "group": "deviceAutomation",
+  "group": "deviceControl",
   "examples": [
     "open youtube on my laptop",
     "open google.com on pc",

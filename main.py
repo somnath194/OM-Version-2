@@ -7,6 +7,7 @@ from stt import run as run_flask
 from brain import brain_function,chat_history
 from tts import speak
 import json
+from command_executor import CommandExecutor
 
 file_path = "D:\\programs\\OM Version 2\\SpeechRecogonisition.txt"
 
@@ -17,7 +18,7 @@ SLEEP_TIMEOUT = 180  # 3 minutes in seconds
 is_awake = True
 
 last_command_time = time.time()
-# executor = CommandExecutor()
+executor = CommandExecutor()
 
 def close_chrome():
     app_name = "Google Chrome"
@@ -103,10 +104,11 @@ try:
             last_command_time = time.time()
             last_transcript = transcript
             output = brain_function(transcript)
+            print(output)
             conv_output, actions = handle_response(json.loads(output))
             speak(conv_output)
-            # executor.execute(json.loads(output))
-            print(actions)
+            executor.execute(actions)
+            # print(actions)
 
         if not is_awake:
             speak("I'm Sleeping... Waiting for wake-up command.")

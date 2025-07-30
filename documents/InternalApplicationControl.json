@@ -14,7 +14,7 @@
       "description": "The name of the internal application to open. Examples include camera, calculator, settings, file manager, gallery, terminal, notepad etc."
     }
   },
-  "group": "deviceAutomation",
+  "group": "deviceControl",
   "examples": [
     "open camera on phone",
     "open calculator on pc",

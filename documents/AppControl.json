@@ -19,7 +19,7 @@
       "description": "The name of the application to be controlled. For example: Chrome, WhatsApp, Arduino IDE, Paint, etc."
     }
   },
-  "group": "deviceAutomation",
+  "group": "deviceControl",
   "examples": [
     "open chrome on my laptop",
     "minimize whatsapp on pc",

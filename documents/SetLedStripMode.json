@@ -5,7 +5,7 @@
   "arguments": {
     "stripMode": {
       "type": "string",
-      "allowedValues": ["music sync", "workMode", "shootingMode"],
+      "allowedValues": ["musicSync", "workMode", "shootingMode"],
       "description": "The mode to set for the LED strip. Examples: music sync, workMode, shootingMode"
     }
   },
