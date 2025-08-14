@@ -8,7 +8,7 @@
       "allowedValues": ["pc", "laptop", "phone", "tab"],
       "description": "The device on which the string should be typed. Can be PC, laptop, phone, or tab."
     },
-    "typingString": {
+    "typingContent": {
       "type": "string",
       "allowedValues": [],
       "description": "The text to type on the device. For example: 'Hello world', 'My name is Om', etc."

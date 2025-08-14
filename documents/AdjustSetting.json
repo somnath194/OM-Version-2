@@ -13,17 +13,23 @@
       "allowedValues": ["brightness", "volume"],
       "description": "The type of setting to adjust. Currently supports brightness and volume."
     },
+    "adjustmentType": {
+      "type": "string",
+      "allowedValues": ["increase", "decrease", "set"],
+      "description": "Specifies how to change the setting — increase, decrease, or set to an exact value."
+    },
     "value": {
       "type": "string",
       "allowedValues": [],
-      "description": "The new value to apply, expressed as a percentage. For example: 20%, 90%."
+      "description": "The new value/adjastment to apply, expressed as a percentage.It can be increasing/decreasing value or set value for example: 20%, 90%."
     }
   },
   "group": "deviceControl",
   "examples": [
-    "set brightness to 1000% on phone",
+    "set brightness to 100% on phone",
     "adjust volume to 90% on laptop",
-    "set my pc volume to 20%",
-    "change brightness to 0% on tab"
+    "increase my pc volume by 20%",
+    "reduce the brightness by 10% on tab",
+    "decrease the volume by 20%"
   ]
 }

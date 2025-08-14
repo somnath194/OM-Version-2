@@ -14,7 +14,7 @@
     "rgbColourCode": {
       "type": "string",
       "allowedValues": [],
-      "description": "The RGB color code to set as value like [255,0,0(list)"
+      "description": "The RGB color code to set as value like [255,0,0(list)]"
     },
     "brightnessValue": {
       "type": "integer",

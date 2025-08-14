@@ -1,9 +1,37 @@
 
-import requests
+import pygetwindow as gw
 import paho.mqtt.client as paho
-import sys
 import time
 import ast
+import asyncio
+import aiohttp
+import inspect
+from rapidfuzz import process
+import os
+import webbrowser
+import pywhatkit as kit
+import pyautogui
+from time import sleep
+import speedtest
+import socket
+import screen_brightness_control as sbc
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+
+APP_WITH_PATH = {
+    "Visual Studio Code": "C:\\Users\\somi\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+    "Google Chrome": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "Brave": "C:\\Users\\somi\\AppData\\Local\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+    "Notepad": "C:\\Windows\\System32\\notepad.exe",
+    "Paint": "C:\\Users\\somi\\AppData\\Local\\Microsoft\\WindowsApps\\mspaint.exe",
+    "Arduino IDE 2.3.5": "C:\\Program Files\\Arduino IDE\\Arduino IDE.exe",
+    "Command Prompt": "cmd",  # Using 'cmd' since it's a system command
+    "Task Manager": "taskmgr",  # System command for Task Manager
+    "Settings": "ms-settings:",  # URI for Windows settings
+    "File Explorer": "explorer",  # Opens File Explorer
+    "DaVinci Resolve": "C:\\Users\\somi\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Blackmagic Design\\DaVinci Resolve\\DaVinci Resolve.lnk"
+                }
 
 
 WLED_IP = "192.168.1.5"
@@ -20,6 +48,263 @@ SEGMENT_MAP = {
     "all":8,
     "back almary": 9
 }
+
+class WindowsAutomation:
+    def __init__(self):
+        # Setup for volume control
+        devices = AudioUtilities.GetSpeakers()
+        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        self.volume = cast(interface, POINTER(IAudioEndpointVolume))
+
+    async def control_application(self, app_name, control_type, device):
+        app = self.get_best_app_match(app_name)
+
+        # Define action handlers in a dict
+        def open_app():
+            os.startfile(APP_WITH_PATH[app])
+
+        def close_app():
+            for title in self.search_app_windows(app):
+                gw.getWindowsWithTitle(title)[0].close()
+
+        def minimize_app():
+            for title in self.search_app_windows(app):
+                gw.getWindowsWithTitle(title)[0].minimize()
+
+        def maximize_app():
+            for title in self.search_app_windows(app):
+                gw.getWindowsWithTitle(title)[0].maximize()
+
+        # Action mapping
+        actions = {
+            "open": open_app,
+            "close": close_app,
+            "minimize": minimize_app,
+            "maximize": maximize_app
+        }
+
+        # Execute the action if it exists
+        if control_type in actions:
+            actions[control_type]()
+        else:
+            raise ValueError(f"Unknown control type: {control_type}")
+
+    async def control_website(self, website_url, device):
+        webbrowser.open(website_url)
+
+    async def search_operate(self, search_platform, search_content, device):
+        if search_platform == "google":
+            try:
+                # Construct the Google search URL
+                search_url = f"https://www.google.com/search?q={search_content}"
+                # Open the default web browser and perform the search
+                webbrowser.open(search_url)
+
+            except Exception as e:
+                print(f"Error: {e}")
+        
+        elif search_platform == "youtube":
+            kit.playonyt(search_content)
+            sleep(1)
+            pyautogui.press("space")
+        
+        elif search_platform == "inside device":
+            sleep(.2)
+            pyautogui.click(702,1079)
+            sleep(.2)
+            pyautogui.click(857,1054)
+            pyautogui.typewrite(search_content)
+            sleep(.2)
+            pyautogui.press("enter")
+    
+    async def simulate_type(self, typing_content, device):
+        pyautogui.typewrite(typing_content)
+        sleep(1)
+        pyautogui.press("enter")
+
+    async def control_system_features(self, action, device):
+        def minimize_all():
+            pyautogui.hotkey('win', 'm')
+        def minimize_current_window():
+            data = gw.getAllTitles()
+            current_tab = data[3]
+            app_instance = gw.getWindowsWithTitle(current_tab)[0]
+            app_instance.minimize()
+        def shutdown():
+            # os.system("shutdown /s /t 5")
+            pass
+        def sleep():
+            # os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
+            pass
+        def restart():
+            # os.system("shutdown /r /t 5")
+            pass
+        def switch_window():
+            pyautogui.hotkey('alt', 'tab')
+        def pause():
+            pyautogui.press("playpause")
+        def enter():
+            pyautogui.press('enter')
+        def full_screen():
+            pyautogui.press('f')
+        def space():
+            pyautogui.press('space')
+        def open_new_tab():
+            time.sleep(.2)  # Small delay so you can focus the browser
+            pyautogui.hotkey('ctrl', 't')
+        def close_browser_tab():
+            time.sleep(.2)  # Small delay so you can focus the browser
+            pyautogui.hotkey('ctrl', 'w')
+        def select_all():
+            time.sleep(.2)
+            pyautogui.hotkey('ctrl','a')
+        def copy():
+            time.sleep(.2)
+            pyautogui.hotkey('ctrl','c')
+        def paste():
+            time.sleep(.2)
+            pyautogui.hotkey('ctrl','v')
+
+        actions = {
+            "minimize all window": minimize_all,
+            "minimize current window": minimize_current_window,
+            "shutdown": shutdown,
+            "sleep": sleep,
+            "restart":restart,
+            "switch window": switch_window,
+            "pause": pause,
+            "hit enter": enter,
+            "full screen": full_screen,
+            "hit space": space,
+            "close browser tab": close_browser_tab,
+            "open new tab":open_new_tab,
+            "select all": select_all,
+            "copy":copy,
+            "paste":paste
+        }
+
+        # Execute the action if it exists
+        if action in actions:
+            actions[action]()
+        else:
+            raise ValueError(f"Unknown control type: {action}")
+
+    async def device_information(self, information_type, device):
+        async def internet_speed():
+            try:
+                st = speedtest.Speedtest()
+                st.get_best_server()
+                download = round(st.download() / 1_000_000, 2)
+                upload = round(st.upload() / 1_000_000, 2)
+                ping = st.results.ping
+                return {
+                    "download_mbps": download,
+                    "upload_mbps": upload,
+                    "ping_ms": ping
+                }
+            except Exception as e:
+                print(f"Error: {e}")
+                return None
+        
+        async def ip_address():
+            local_ip = socket.gethostbyname(socket.gethostname())
+            return local_ip
+        
+        actions = {
+            "ip address": ip_address,
+            "internet speed": internet_speed}
+        
+        if information_type in actions:
+            result = await actions[information_type]()
+        else:
+            raise ValueError(f"Unknown control type: {information_type}")
+        
+        return result
+    
+    async def adjust_settings(self, value_type, adjustment_type, value, device):
+        try:
+            numeric_value = int(str(value).replace('%', '').strip())
+
+            if value_type.lower() == "brightness":
+                await self._adjust_brightness(adjustment_type, numeric_value)
+
+            elif value_type.lower() == "volume":
+                await self._adjust_volume(adjustment_type, numeric_value)
+
+            else:
+                print(f"⚠️ Unsupported value type: {value_type}")
+
+        except Exception as e:
+            print(f"❌ Error adjusting settings: {e}")
+
+    async def _adjust_brightness(self, adjustment_type, numeric_value):
+        current_brightness = sbc.get_brightness(display=0)[0]
+        if adjustment_type.lower() == "increase":
+            sbc.set_brightness(min(current_brightness + numeric_value, 100))
+        elif adjustment_type.lower() == "decrease":
+            sbc.set_brightness(max(current_brightness - numeric_value, 0))
+        elif adjustment_type.lower() == "set":
+            sbc.set_brightness(numeric_value)
+        else:
+            print(f"⚠️ Unknown brightness adjustment type: {adjustment_type}")
+
+    async def _adjust_volume(self, adjustment_type, numeric_value):
+        current_volume = round(100 * self.volume.GetMasterVolumeLevelScalar())
+
+        if adjustment_type.lower() == "increase":
+            target_volume = min(current_volume + numeric_value, 100)
+        elif adjustment_type.lower() == "decrease":
+            target_volume = max(current_volume - numeric_value, 0)
+        elif adjustment_type.lower() == "set":
+            target_volume = min(max(numeric_value, 0), 100)
+        else:
+            print(f"⚠️ Unknown volume adjustment type: {adjustment_type}")
+            return
+
+        self._set_volume_precisely(target_volume)
+
+    def _set_volume_precisely(self, target_volume):
+        """Adjusts volume step-by-step using hotkeys."""
+        def is_odd(num):
+            return num % 2 != 0
+
+        current_volume = round(100 * self.volume.GetMasterVolumeLevelScalar())
+
+        # Align to even numbers to avoid infinite loop
+        if is_odd(current_volume):
+            current_volume += 1
+        if is_odd(target_volume):
+            target_volume += 1
+
+        while target_volume != current_volume:
+            if target_volume > current_volume:
+                pyautogui.hotkey('volumeup')
+            elif target_volume < current_volume:
+                pyautogui.hotkey('volumedown')
+            sleep(0.15)
+            current_volume = round(100 * self.volume.GetMasterVolumeLevelScalar())
+
+    def search_app_windows(self, app_name):
+        l = []
+        data = gw.getAllTitles()
+        for i in data:
+            if app_name in i:
+                l.append(i)
+        return l
+
+    def get_best_app_match(self, query):
+        query = query.lower().strip()
+        if query == "cmd":
+            return "Command Prompt"
+        else:        
+            choices = list(APP_WITH_PATH.keys())
+            result = process.extractOne(query, choices, score_cutoff=50)
+            if result:
+                match, score, _ = result
+                return match
+            else:
+                return None # No match found
+
 
 class HomeController:
     def __init__(self, mqtt_server="broker.mqtt.cool"):
@@ -52,19 +337,19 @@ class HomeController:
 
         self.blocked_off = {"pc", "raspberry pi"}
 
-    def mqtt_publish(self, command, topic):
+    async def mqtt_publish(self, command, topic):
+        await asyncio.to_thread(self._publish_sync, command, topic)
+
+    def _publish_sync(self, command, topic):
         try:
             result = self.client.connect(self.mqtt_server, 1883, 60)
-            if result != 0:
-                print(f"❌ Could not connect to MQTT Broker! Code: {result}")
-                return
-            self.client.publish(topic, command, 0)
-            time.sleep(1)
+            if result == 0:
+                self.client.publish(topic, command, 0)
+                time.sleep(1)
         except Exception as e:
-            print(f"❌ MQTT error while connecting/publishing: {e}")
+            print(f"❌ MQTT error: {e}")
 
-
-    def control_device(self, controlled_device, controlled_state):
+    async def control_device(self, controlled_device, controlled_state):
         if controlled_device not in self.device_relay_map:
             print(f"Unknown device: {controlled_device}")
             return
@@ -78,11 +363,11 @@ class HomeController:
             return
 
         command = f"{relay_id}_{controlled_state}"
-        self.mqtt_publish(command, topic)
+        await self.mqtt_publish(command, topic)
         print(f"Turned {controlled_state} {controlled_device}")
 
 class LEDStripController:
-    def set_led_segment(self, segment_name, rgb_colour_code, brightness_value=255):
+    async def set_led_segment(self, segment_name, rgb_colour_code, brightness_value=255):
         segment_id = SEGMENT_MAP.get(segment_name.lower())
         if isinstance(rgb_colour_code, str):
             try:
@@ -110,7 +395,7 @@ class LEDStripController:
                     "col": [rgb_colour_code, [0, 0, 0], [0, 0, 0]],
                     "bri": brightness_value
                 })
-            self.send_wled_request(payload,WLED_IP)
+            await self.send_wled_request(payload,WLED_IP)
             payload2 = {
             "on": True,
             "bri": brightness_value,
@@ -119,7 +404,7 @@ class LEDStripController:
                 "col": [rgb_colour_code, [0, 0, 0], [0, 0, 0]],
             }]}
             print("🎨 Applying color to ALL segments.")
-            self.send_wled_request(payload2,BACK_WLED_IP)
+            await self.send_wled_request(payload2,BACK_WLED_IP)
 
         elif segment_id == 9:
             payload = {
@@ -130,7 +415,7 @@ class LEDStripController:
                 "col": [rgb_colour_code, [0, 0, 0], [0, 0, 0]],
             }]}
             print(f"🎯 Applying color to segment: {segment_name} (ID: {segment_id})")
-            self.send_wled_request(payload,BACK_WLED_IP)
+            await self.send_wled_request(payload,BACK_WLED_IP)
 
         else:
             payload["seg"].append({
@@ -139,9 +424,9 @@ class LEDStripController:
                 "bri": brightness_value
             })
             print(f"🎯 Applying color to segment: {segment_name} (ID: {segment_id})")
-            self.send_wled_request(payload,WLED_IP)
+            await self.send_wled_request(payload,WLED_IP)
             
-    def set_segment_mode(self, strip_mode):
+    async def set_segment_mode(self, strip_mode):
         payload = None
 
         if strip_mode == "musicSync":
@@ -180,30 +465,41 @@ class LEDStripController:
                 "ps": 1
             }
         if payload:
-            self.send_wled_request(payload, WLED_IP)
+            await self.send_wled_request(payload, WLED_IP)
 
-
-    def send_wled_request(self, payload, IP):
+    async def send_wled_request(self, payload, IP):
         url = f"http://{IP}/json/state"
         try:
-            response = requests.post(url, json=payload)
-            response.raise_for_status()
-            print("✅ WLED command sent successfully.")
-        except requests.exceptions.RequestException as e:
-            print(f"❌ Failed to send WLED command: {e}")
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, json=payload) as resp:
+                    if resp.status == 200:
+                        print("✅ WLED command sent successfully.")
+                    else:
+                        print(f"❌ Failed with code {resp.status}")
+        except Exception as e:
+            print(f"❌ Exception in WLED request: {e}")
 
 class CommandExecutor:
     def __init__(self):
         self.home_controller = HomeController()
         self.led_controller = LEDStripController()
+        self.windows_automation = WindowsAutomation()
 
         self.function_map = {
             "HomeControl": self.execute_home_control,
             "SetLedStripSegment": self.execute_set_led_strip,
-            "SetLedStripMode": self.execute_led_strip_mode
+            "SetLedStripMode": self.execute_led_strip_mode,
+            "AppControl": self.execute_app_control,
+            "OpenWebsite": self.execute_website_control,
+            "PerformSearch": self.execute_search_operation,
+            "SimulateTyping": self.execute_simulate_typing,
+            "SystemControl":self.execute_system_control,
+            "GetDeviceInfo": self.execute_device_info,
+            "AdjustSetting": self.execute_adjust_setting
         }
 
-    def execute(self, actions: list):
+    async def execute(self, actions: list):
+        results = []
         for action_obj in actions:
             function_name = action_obj.get("functionName")
             arguments = action_obj.get("arguments", {})
@@ -211,35 +507,99 @@ class CommandExecutor:
             handler = self.function_map.get(function_name)
             if handler:
                 try:
-                    handler(arguments)
+                    if inspect.iscoroutinefunction(handler):
+                        result = await handler(arguments)
+                    else:
+                        result = handler(arguments)
+
+                    if result is not None:
+                        results.append({
+                            "function_name":function_name,
+                            "result":result
+                        })
+
                 except Exception as e:
                     print(f"❌ Error executing '{function_name}': {e}")
             else:
                 print(f"⚠️ No handler found for function: {function_name}")
-
-
-    def execute_home_control(self, args: dict):
+        return results
+    
+    async def execute_home_control(self, args: dict):
         formatted_args = {
             "controlled_device": args["controlledAppliances"],
             "controlled_state": args["controlledState"]
         }
-        self.home_controller.control_device(**formatted_args)
+        await self.home_controller.control_device(**formatted_args)
 
-    def execute_set_led_strip(self, args: dict):
+    async def execute_set_led_strip(self, args: dict):
         formatted_args = {
             "segment_name": args["segmentName"],
             "rgb_colour_code": args["rgbColourCode"],
             "brightness_value": args["brightnessValue"]
         }
-        self.led_controller.set_led_segment(**formatted_args)
+        await self.led_controller.set_led_segment(**formatted_args)
 
-    def execute_led_strip_mode(self, args: dict):
+    async def execute_led_strip_mode(self, args: dict):
         formatted_args = {
             "strip_mode": args["stripMode"]
         }
-        self.led_controller.set_segment_mode(**formatted_args)
+        await self.led_controller.set_segment_mode(**formatted_args)
+    
+    async def execute_app_control(self, args: dict):
+        formatted_args = {
+            "app_name": args["applicationName"],
+            "control_type" : args["applicationControlType"],
+            "device": args["device"]
+        }
+        await self.windows_automation.control_application(**formatted_args)
+    
+    async def execute_website_control(self, args: dict):
+        formatted_args = {
+            "website_url": args["websiteUrl"],
+            "device": args["device"]
+        }
+        await self.windows_automation.control_website(**formatted_args)
+    
+    async def execute_search_operation(self, args: dict):
+        formatted_args = {
+            "search_platform": args["searchPlatform"],
+            "search_content": args["searchContent"],
+            "device": args["device"]
+        }
+        await self.windows_automation.search_operate(**formatted_args)
+    
+    async def execute_simulate_typing(self, args: dict):
+        formatted_args = {
+            "typing_content": args["typingContent"],
+            "device": args["device"]
+        }
+        await self.windows_automation.simulate_type(**formatted_args)
 
-
+    async def execute_system_control(self, args: dict):
+        formatted_args = {
+            "action": args["action"],
+            "device": args["device"]
+        }
+        await self.windows_automation.control_system_features(**formatted_args)
+    
+    async def execute_device_info(self, args: dict):
+        formatted_args = {
+            "value_type": args["informationType"],
+            "device": args["device"]
+        }
+        result = await self.windows_automation.device_information(**formatted_args)
+        return result
+    
+    async def execute_adjust_setting(self, args:dict):
+        formatted_args = {
+            "value_type": args["valueType"],
+            "adjustment_type": args["adjustmentType"],
+            "value": args["value"],
+            "device": args["device"]
+        }
+        await self.windows_automation.adjust_settings(**formatted_args)
 
 if __name__ == "__main__":
-    pass
+    wa = WindowsAutomation()
+    result = asyncio.run(wa.control_application("file explorer","close",None))
+    print(result)

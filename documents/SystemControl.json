@@ -12,9 +12,8 @@
       "type": "string",
       "allowedValues": [
         "minimize all window", "minimize current window", "shutdown", "sleep", "restart",
-        "switch window", "pause", "hit enter", "full screen", "hit space", "close browser tab",
-        "select all", "copy", "paste","maximize previous window"
-      ],
+        "switch window","pause","hit enter", "full screen", "hit space", "close browser tab","open new tab", "select all", "copy","paste"],
+
       "description": "The system-level action to perform. Includes power actions, window control, and keyboard inputs."
     }
   },
@@ -25,6 +24,13 @@
     "put phone to sleep",
     "press enter on my tab",
     "copy on my laptop",
-    "restart pc"
+    "restart pc",
+    "pause the song",
+    "hit the space button",
+    "do full screen",
+    "pause the current media",
+    "paste the current content",
+    "paste the clipboard content",
+    "please open a new tab on the current browser"
   ]
 }

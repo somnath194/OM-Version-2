@@ -1,5 +1,7 @@
 import requests
 import threading
+import asyncio
+import aiohttp
 import time
 import pygetwindow as gw
 from flags import exit_event,exit_commands,sleep_commands,wake_up_commands
@@ -16,9 +18,9 @@ SLEEP_TIMEOUT = 180  # 3 minutes in seconds
 
 # States
 is_awake = True
-
 last_command_time = time.time()
 executor = CommandExecutor()
+last_transcript = ""
 
 def close_chrome():
     app_name = "Google Chrome"
@@ -34,7 +36,7 @@ def wait_and_shutdown():
     close_chrome()
     requests.post('http://localhost:5000/shutdown')
 
-def handle_response(response_json):
+async def handle_response(response_json):
     conversation_output = None
     function_actions = []
     for item in response_json:
@@ -45,20 +47,17 @@ def handle_response(response_json):
 
     return conversation_output, function_actions
 
-# Start Flask and Shutdown Watcher
-threading.Thread(target=run_flask, daemon=True).start()
-threading.Thread(target=wait_and_shutdown, daemon=True).start()
 
-speak("System is Ready to Take Commands.....")
+async def assistant_loop():
+    global is_awake, last_command_time, last_transcript
 
-last_transcript = ""
+    speak("System is Ready to Take Commands.....")
 
-try:
     while not exit_event.is_set():
-        time.sleep(1)
+        await asyncio.sleep(1)
+
         with open(file_path, "r") as file:
             transcript = file.read().strip().lower()
-
         # Reset transcript file
         open(file_path, "w").close()
 
@@ -66,7 +65,7 @@ try:
         if not transcript or transcript == last_transcript:
             # Check for inactivity sleep
             if is_awake and time.time() - last_command_time > SLEEP_TIMEOUT:
-                speak("No command for 3 minutes. Going to sleep mode...")
+                await speak("No command for 3 minutes. Going to sleep mode...")
                 is_awake = False
             continue
 
@@ -83,10 +82,9 @@ try:
             if is_awake:
                 is_awake = False
                 speak("Going to sleep...")
-                continue
             else:
                 speak("I'm Already Sleeping!")
-                continue
+            continue
 
         # Wake up command
         if transcript in wake_up_commands:
@@ -94,25 +92,36 @@ try:
                 is_awake = True
                 last_command_time = time.time()
                 speak("I am awake now!")
-                continue
             else:
                 speak("I'm Already Awake Ready for Your Commands......")
-                continue
+            continue
 
         # If awake, parse and execute command
         if is_awake and transcript != last_transcript:
             last_command_time = time.time()
             last_transcript = transcript
-            output = brain_function(transcript)
-            print(output)
-            conv_output, actions = handle_response(json.loads(output))
+
+            response = await brain_function(transcript)
+            print(response)
+
+            conv_output, actions = await handle_response(json.loads(response))
             speak(conv_output)
-            executor.execute(actions)
+            action_results = await executor.execute(actions)
+            # print(f"Action results: {action_results}")
+
+            if action_results:
+                result_context = f"Action results: {action_results}"
+                followup_response = await brain_function(f"{conv_output}\n{result_context}")
+                followup_conv_output, _ = await handle_response(json.loads(followup_response))
+                speak(followup_conv_output)
+
             # print(actions)
 
         if not is_awake:
             speak("I'm Sleeping... Waiting for wake-up command.")
 
-except KeyboardInterrupt:
-    exit_event.set()
-    speak("Force shut down via KeyboardInterrupt.")
+
+if __name__ == "__main__":
+    threading.Thread(target=run_flask, daemon=True).start()
+    threading.Thread(target=wait_and_shutdown, daemon=True).start()
+    asyncio.run(assistant_loop())

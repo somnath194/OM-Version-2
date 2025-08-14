@@ -7,6 +7,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
 import os
+import asyncio
 
 # Load API key
 load_dotenv(dotenv_path=".env", override=True)
@@ -17,17 +18,24 @@ model = ChatOpenAI(model='gpt-4.1-mini', api_key=api_key)
 
 
 systemBehaviour = """
-Your name is OM. You are a helpful AI Assistant designed to understand both user queries and task requests.
-Given a transcript of a conversation/command and retriv informations as json structure/text docs, analyze the informations and extract the primary action(s) that need to be executed and answer for normal/general quary.
+Your name is OM. You are a helpful AI Assistant designed to understand both user queries and task requests. You are maintained by somnath and he is your boss.
+Given a transcript of a conversation/command and retriv informations as json structure/text docs, analyze the informations and extract the primary action(s) that
+need to be executed and answer for normal/general quary.
 Use the retrieved documents and current conversation to respond appropriately.
+You may be given results from previously executed actions.
+Use this information to give a more accurate or intelligent answer.
+If action results are provided, incorporate them naturally into your response.
 
 ## Instructions:
-- If the user asks a general question, respond in `converssion_output` and the actions as null.
+- If the user asks a general question observe carefully, respond in `converssion_output` and the actions as null.
 - If the user gives a task or command (like "open light", "play music", etc), return one or more structured `action` items and reply in formality in the converssion_output.
 - If the user mixes both, return both parts.
 - If you confuse about user quary or need extra info for taking an action than feel free to ask 
 - In arguments set only one allowedValues per action not coma seperated allowedValues.
+- If allowedValues field was not empty than pass argument from allowedValues only don't pass other value.
 - You can generate multiple actions for combined quaries.
+- If no device was mentioned than consider "PC" as default.
+- If user asks to play something than do perform search operation on youtube.
 
 ## Output Format (strict JSON):
 [
@@ -97,15 +105,15 @@ vectorstore = FAISS.load_local(
 )
 
 
-def brain_function(user_quary):
+async def brain_function(user_quary):
     # Add user message
     chat_history.append(HumanMessage(content=user_quary))
 
     results = vectorstore.similarity_search(user_quary, k=6)
     retrieved_doc_msgs = [SystemMessage(content=doc.page_content) for doc in results]
 
-    # for doc in results:
-    #     print(doc.metadata)
+    for doc in results:
+        print(doc.metadata)
 
     # # 🔍 Format prompt before sending to LLM
     # formatted_prompt = prompt.format_messages(
@@ -121,7 +129,7 @@ def brain_function(user_quary):
     # print("===== END OF PROMPT =====\n")
 
     # 🚀 Invoke model using same inputs
-    response = chain.invoke({
+    response = await chain.ainvoke({
         "chat_history": chat_history,
         "retrieved_docs": retrieved_doc_msgs
     })
@@ -133,9 +141,11 @@ def brain_function(user_quary):
 
 
 if __name__ == "__main__":
-    while True:
-        quary = input("You: ")
-        if 'exit' in quary:
-            break
-        print(brain_function(quary))
-    print(chat_history)
+    async def assistant_loop():
+        while True:
+            quary = input("You: ")
+            if 'exit' in quary:
+                break
+            print(await brain_function(quary))
+        print(chat_history)
+    asyncio.run(assistant_loop())

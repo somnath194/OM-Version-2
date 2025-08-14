@@ -22,7 +22,10 @@ flask-cors
 
 pygetwindow
 paho-mqtt
-
+pyautogui
+pywhatkit
+speedtest-cli
 faiss-cpu
-
+screen_brightness_control
+pycaw
 

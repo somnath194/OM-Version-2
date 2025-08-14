@@ -16,7 +16,7 @@
     "applicationName": {
       "type": "string",
       "allowedValues": [],
-      "description": "The name of the application to be controlled. For example: Chrome, WhatsApp, Arduino IDE, Paint, etc."
+      "description": "The name of the application to be controlled can be internal or installed. For example: Chrome, WhatsApp, Arduino IDE, Paint, settings, file, cmd etc. Names should always returned in lower case"
     }
   },
   "group": "deviceControl",

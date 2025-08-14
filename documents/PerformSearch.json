@@ -16,14 +16,14 @@
     "searchContent": {
       "type": "string",
       "allowedValues": [],
-      "description": "The content or query to search for. For example: 'how to make pasta', 'latest iphone', 'file manager'."
+      "description": "The content or query to search for. For example: 'how to make pasta', 'latest iphone', 'play orijit sing song'."
     }
   },
   "group": "deviceControl",
   "examples": [
     "search how to make pasta on google using phone",
-    "look for rrr trailer on youtube using pc",
-    "search documents for resume on laptop",
-    "search inside device for downloaded pdfs on tab"
+    "look for rrr trailer on youtube on pc",
+    "play recent t-serise song",
+    "search recent cricket news from google on phone"
   ]
 }
