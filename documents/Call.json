@@ -15,7 +15,7 @@
     },
     "callMedia": {
       "type": "string",
-      "allowedValues": ["sim", "whatsapp", "insta"],
+      "allowedValues": ["sim", "whatsapp"],
       "description": "The platform or medium to use for the call. Examples: SIM, WhatsApp, Instagram etc."
     },
     "callType": {

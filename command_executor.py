@@ -18,6 +18,9 @@ import screen_brightness_control as sbc
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+import json
+import requests
+import yt_dlp
 
 APP_WITH_PATH = {
     "Visual Studio Code": "C:\\Users\\somi\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
@@ -55,6 +58,8 @@ class WindowsAutomation:
         devices = AudioUtilities.GetSpeakers()
         interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         self.volume = cast(interface, POINTER(IAudioEndpointVolume))
+        self.join_device_id = "c6a07d0b1b9e470eb7181498d7eb8d49" # phone
+        self.join_api_key = "8680fb0ccc1249908d265c378ea0e167"
 
     async def control_application(self, app_name, control_type, device):
         app = self.get_best_app_match(app_name)
@@ -83,14 +88,26 @@ class WindowsAutomation:
             "maximize": maximize_app
         }
 
+        if device == "pc":
         # Execute the action if it exists
-        if control_type in actions:
-            actions[control_type]()
-        else:
-            raise ValueError(f"Unknown control type: {control_type}")
+            if control_type in actions:
+                actions[control_type]()
+            else:
+                raise ValueError(f"Unknown control type: {control_type}")
+        elif device == "phone":
+            if control_type == "open":
+                open_app_url = f"https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={self.join_api_key}&app={app_name}&deviceId={self.join_device_id}"
+                requests.get(open_app_url)
 
     async def control_website(self, website_url, device):
-        webbrowser.open(website_url)
+        if device == "pc":
+            webbrowser.open(website_url)
+        elif device == "phone":
+            # Send the URL to the phone using Join API
+            open_website_url = f"https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={self.join_api_key}&url={website_url}&deviceId={self.join_device_id}"
+            requests.get(open_website_url)
+        else:
+            raise ValueError(f"Unknown device type: {device}")
 
     async def search_operate(self, search_platform, search_content, device):
         if search_platform == "google":
@@ -98,15 +115,24 @@ class WindowsAutomation:
                 # Construct the Google search URL
                 search_url = f"https://www.google.com/search?q={search_content}"
                 # Open the default web browser and perform the search
-                webbrowser.open(search_url)
+                if device == "pc":
+                    webbrowser.open(search_url)
+                elif device == "phone":
+                    phone_search_url = f"https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={self.join_api_key}&url={search_url}&deviceId={self.join_device_id}"
+                    requests.get(phone_search_url)
 
             except Exception as e:
                 print(f"Error: {e}")
         
         elif search_platform == "youtube":
-            kit.playonyt(search_content)
-            sleep(1)
-            pyautogui.press("space")
+            if device == "pc":
+                kit.playonyt(search_content)
+                sleep(1)
+                pyautogui.press("space")
+            elif device == "phone":
+                search_url = self.get_first_youtube_link(search_content)
+                phone_search_url = f"https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={self.join_api_key}&url={search_url}&deviceId={self.join_device_id}"
+                requests.get(phone_search_url)
         
         elif search_platform == "inside device":
             sleep(.2)
@@ -291,6 +317,12 @@ class WindowsAutomation:
             if app_name in i:
                 l.append(i)
         return l
+    
+    def get_first_youtube_link(self,query):
+        ydl_opts = {"quiet": True, "noplaylist": True, "extract_flat": True}
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(f"ytsearch1:{query}", download=False)
+            return f"https://www.youtube.com/watch?v={info['entries'][0]['id']}"
 
     def get_best_app_match(self, query):
         query = query.lower().strip()
@@ -305,6 +337,76 @@ class WindowsAutomation:
             else:
                 return None # No match found
 
+class CommunicationAutomation:
+    def __init__(self):
+        with open('contacts_10digit.json', "r") as f:
+            self.contact_list = json.load(f)
+        self.join_device_id = "c6a07d0b1b9e470eb7181498d7eb8d49" #phone
+        self.join_api_key = "8680fb0ccc1249908d265c378ea0e167" 
+
+    async def Call(self, person_name, call_media, call_type, device):
+        try:
+            if call_media.lower() == "sim":
+                await self.SimCall(person_name)
+            elif call_media.lower() == "whatsapp":
+                await self.WhatsappCall(person_name,call_type,device)
+
+        except Exception as e:
+            print(f"❌ Error during calling: {e}")
+    
+    async def Message(self, person_name, message_media, message_content, device):
+        try:
+            number, actual_name = await self.get_number(person_name.lower())
+            number_with_country_code = f"91{number}"
+
+            if device == "pc":
+                pass
+
+            elif device == "phone":
+                if message_media == "sim":
+                    data = f"sim msg||{number_with_country_code}||{message_content}"
+                    msg_url = f"https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={self.join_api_key}&text={data}&deviceId={self.join_device_id}"
+                    requests.get(msg_url)
+                    # print(f"Message sent to {actual_name} ({number})")
+
+                elif message_media == "whatsapp":
+                    data = f"whatsapp msg||{number_with_country_code}||{message_content}"
+                    msg_url = f"https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={self.join_api_key}&text={data}&deviceId={self.join_device_id}"
+                    requests.get(msg_url)
+                    # print(f"Message sent to {actual_name} ({number})")
+
+        except Exception as e:
+            print(f"❌ Error sending message: {e}")
+
+    async def SimCall(self, person_name):
+        number, actual_name = await self.get_number(person_name.lower())
+        call_url = f"https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={self.join_api_key}&callnumber={number}&deviceId={self.join_device_id}"
+        requests.get(call_url)
+        # print(f"calling {actual_name} : {number}")
+
+    async def WhatsappCall(self, person_name, call_type, device):
+        number, actual_name = await self.get_number(person_name.lower())
+        number_with_country_code = f"91{number}"
+
+        if call_type.lower() == "voice":
+            data = f"whatsapp voice call||{number_with_country_code}"
+            call_url = f"https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={self.join_api_key}&text={data}&deviceId={self.join_device_id}"
+            requests.get(call_url)
+
+        elif call_type.lower() == "video":
+            data = f"whatsapp video call||{number_with_country_code}"
+            call_url = f"https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={self.join_api_key}&text={data}&deviceId={self.join_device_id}"
+            requests.get(call_url)
+
+    async def get_number(self, name):
+        choices = list(self.contact_list.keys())
+        result = process.extractOne(name, choices, score_cutoff=50)
+        if result:
+            match, score, _ = result
+            number = self.contact_list[match]
+            return number, match
+        else:
+            return None # No match found
 
 class HomeController:
     def __init__(self, mqtt_server="broker.mqtt.cool"):
@@ -479,11 +581,17 @@ class LEDStripController:
         except Exception as e:
             print(f"❌ Exception in WLED request: {e}")
 
+class ComputerVisionActivation:
+    def __init__(self):
+        pass
+    
+
 class CommandExecutor:
     def __init__(self):
         self.home_controller = HomeController()
         self.led_controller = LEDStripController()
         self.windows_automation = WindowsAutomation()
+        self.communication_automation = CommunicationAutomation()
 
         self.function_map = {
             "HomeControl": self.execute_home_control,
@@ -495,7 +603,10 @@ class CommandExecutor:
             "SimulateTyping": self.execute_simulate_typing,
             "SystemControl":self.execute_system_control,
             "GetDeviceInfo": self.execute_device_info,
-            "AdjustSetting": self.execute_adjust_setting
+            "AdjustSetting": self.execute_adjust_setting,
+            "Call":self.execute_call,
+            "Message": self.execute_message
+            
         }
 
     async def execute(self, actions: list):
@@ -599,7 +710,25 @@ class CommandExecutor:
         }
         await self.windows_automation.adjust_settings(**formatted_args)
 
+    async def execute_call(self, args:dict):
+        formatted_args = {
+            "person_name": args["personName"],
+            "call_media": args["callMedia"],
+            "call_type": args["callType"],
+            "device": args["device"]
+        }
+        await self.communication_automation.Call(**formatted_args)
+
+    async def execute_message(self, args:dict):
+        formatted_args = {
+            "person_name": args["personName"],
+            "message_media": args["messageMedia"],
+            "message_content": args["messageContent"],
+            "device": args["device"]
+        }
+        await self.communication_automation.Message(**formatted_args)
+
 if __name__ == "__main__":
     wa = WindowsAutomation()
-    result = asyncio.run(wa.control_application("file explorer","close",None))
-    print(result)
+    ca = CommunicationAutomation()
+    print(asyncio.run(ca.Message('sister','sim','kokhon jabi re beriyechis','phone')))

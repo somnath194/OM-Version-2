@@ -35,6 +35,8 @@ If action results are provided, incorporate them naturally into your response.
 - If allowedValues field was not empty than pass argument from allowedValues only don't pass other value.
 - You can generate multiple actions for combined quaries.
 - If no device was mentioned than consider "PC" as default.
+- If only personName was mentioned than consider voice as callType, sim as callMedia and phone as device.
+- For calling pass the personName as same as say by user like for sanku 2 pass "sanku 2" not sanku
 - If user asks to play something than do perform search operation on youtube.
 
 ## Output Format (strict JSON):

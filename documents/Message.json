@@ -15,7 +15,7 @@
     },
     "messageMedia": {
       "type": "string",
-      "allowedValues": ["sim", "whatsapp","instagram"],
+      "allowedValues": ["sim", "whatsapp"],
       "description": "The platform or medium to send the message through. Examples: SIM, WhatsApp, Instagram etc."
     },
     "messageContent": {

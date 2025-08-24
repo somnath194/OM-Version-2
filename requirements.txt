@@ -28,4 +28,9 @@ speedtest-cli
 faiss-cpu
 screen_brightness_control
 pycaw
-
+yt_dlp
+opencv-python
+dlib
+face_recognition
+resemblyzer
+speechbrain
