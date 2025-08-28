@@ -19,5 +19,5 @@ def speak(audio):
 #     loop = asyncio.get_event_loop()
 #     await loop.run_in_executor(None, speak_sync, audio)
 
-# if __name__ == "__main__":
-#     asyncio.run(speak("I'm Om, your AI assistant"))
+if __name__ == "__main__":
+    speak("I'm Om, your AI assistant")

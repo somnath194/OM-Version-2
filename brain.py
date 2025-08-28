@@ -14,7 +14,7 @@ load_dotenv(dotenv_path=".env", override=True)
 api_key = os.getenv("OPENAI_API_KEY")
 
 # Initialize model
-model = ChatOpenAI(model='gpt-4.1-mini', api_key=api_key) 
+model = ChatOpenAI(model='gpt-4.1-mini', api_key=api_key)  # type: ignore
 
 
 systemBehaviour = """

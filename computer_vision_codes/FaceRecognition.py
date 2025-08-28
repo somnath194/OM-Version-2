@@ -8,7 +8,7 @@ phone_url = 'http://192.168.1.4:8080/shot.jpg'
 
 
 #Load the encoding file
-file = open('D:\\programs\\Project Shunn\\Computer Vision Code\\EncodeFile.p', 'rb')
+file = open('D:\\Programs\\OM-Version-2\\computer_vision_codes\\EncodeFile.p', 'rb')
 encodeListKnownWithNames = pickle.load(file)
 file.close()
 encodeListKnown, imgNames = encodeListKnownWithNames

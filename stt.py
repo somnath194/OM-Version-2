@@ -4,6 +4,7 @@ import webbrowser
 import threading
 import logging
 from flags import exit_event,exit_commands
+import json
 
 # Silence Flask request logs
 log = logging.getLogger('werkzeug')
@@ -96,15 +97,15 @@ def index():
 @app.route('/transcript', methods=['POST'])
 def receive_transcript():
     data = request.json
-    transcript = data.get('transcript', '')
-    transcript_type = data.get('type', 'final')
+    transcript = data.get('transcript', '') 
+    transcript_type = data.get('type', 'final') 
 
     if transcript_type == 'interim':
         # Overwrite line for live feedback
         print(f"\r{transcript}", end='', flush=True)
     else:
         print(f"")
-        with open("D:\\programs\\OM Version 2\\SpeechRecogonisition.txt", "w") as file:
+        with open("D:\\Programs\\OM-Version-2\\SpeechRecogonisition.txt", "w") as file:
             file.write(transcript.strip().lower())
             if transcript.strip().lower() in exit_commands:
                 exit_event.set()
@@ -125,3 +126,6 @@ def shutdown():
 def run():
     threading.Timer(1, open_browser).start()
     app.run(port=5000)
+
+if __name__ == '__main__':
+    run()

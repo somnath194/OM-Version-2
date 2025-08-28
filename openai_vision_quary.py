@@ -11,7 +11,7 @@ api_key1 = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key1)
 
 # Load image from local PC and convert to base64
-image_path = "math2.webp"  # your local image
+image_path = "testing_files//test.jpg"  # your local image
 with open(image_path, "rb") as f:
     image_base64 = base64.b64encode(f.read()).decode("utf-8")
 
@@ -20,7 +20,7 @@ response = client.chat.completions.create(
     model="gpt-4o-mini",
     messages=[
         {"role": "user", "content": [
-            {"type": "text", "text": "solve the following math problem"},
+            {"type": "text", "text": "What is in this image?"},
             {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"}}
         ]}
     ],

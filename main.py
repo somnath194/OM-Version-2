@@ -11,7 +11,7 @@ from tts import speak
 import json
 from command_executor import CommandExecutor
 
-file_path = "D:\\programs\\OM Version 2\\SpeechRecogonisition.txt"
+file_path = "D:\\Programs\\OM-Version-2\\SpeechRecogonisition.txt"
 
 # Constants for sleep/wake
 SLEEP_TIMEOUT = 180  # 3 minutes in seconds

@@ -22,6 +22,9 @@ import json
 import requests
 import yt_dlp
 
+# Changable locations of applications
+# App paths, windows search locations, wled ips, any wled segment map, join api key and device id's, contact list,  
+
 APP_WITH_PATH = {
     "Visual Studio Code": "C:\\Users\\somi\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
     "Google Chrome": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -39,6 +42,9 @@ APP_WITH_PATH = {
 
 WLED_IP = "192.168.1.5"
 BACK_WLED_IP = "192.168.1.6"
+
+join_device_id = "c6a07d0b1b9e470eb7181498d7eb8d49" #phone
+join_api_key = "8680fb0ccc1249908d265c378ea0e167"
 
 SEGMENT_MAP = {
     "front almary": 1,
@@ -583,8 +589,7 @@ class LEDStripController:
 
 class ComputerVisionActivation:
     def __init__(self):
-        pass
-    
+        pass   
 
 class CommandExecutor:
     def __init__(self):
@@ -731,4 +736,6 @@ class CommandExecutor:
 if __name__ == "__main__":
     wa = WindowsAutomation()
     ca = CommunicationAutomation()
-    print(asyncio.run(ca.Message('sister','sim','kokhon jabi re beriyechis','phone')))
+    hm = HomeController()
+    lc = LEDStripController()
+    print(asyncio.run(ca.Call("ma","sim","voice","phone")))
