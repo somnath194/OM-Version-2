@@ -114,8 +114,8 @@ async def brain_function(user_quary):
     results = vectorstore.similarity_search(user_quary, k=6)
     retrieved_doc_msgs = [SystemMessage(content=doc.page_content) for doc in results]
 
-    for doc in results:
-        print(doc.metadata)
+    # for doc in results:
+    #     print(doc.metadata)
 
     # # 🔍 Format prompt before sending to LLM
     # formatted_prompt = prompt.format_messages(

@@ -102,7 +102,7 @@ async def assistant_loop():
             last_transcript = transcript
 
             response = await brain_function(transcript)
-            print(response)
+            # print(response)
 
             conv_output, actions = await handle_response(json.loads(response))
             speak(conv_output)

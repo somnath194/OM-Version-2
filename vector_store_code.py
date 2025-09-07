@@ -12,7 +12,7 @@ load_dotenv(dotenv_path=".env", override=True)
 api_key = os.getenv("OPENAI_API_KEY")
 
 # Folder containing both JSON and TXT files
-document_folder_path = "D:\\programs\\OM Version 2\\documents"
+document_folder_path = "D:\\Programs\\OM-Version-2\\documents"
 
 # Initialize
 documents = []

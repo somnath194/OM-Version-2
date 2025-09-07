@@ -1,0 +1,30 @@
+{
+  "functionName": "VisionQueryMode",
+  "description": "Handles query-based computer vision tasks such as image-based question answering, OCR text extraction, or face recognition from selected camera sources.",
+  "isAsync": true,
+  "arguments": {
+    "camera_selection": {
+      "type": "string",
+      "allowedValues": ["pc", "phone", "tab", "laptop", "cctv"],
+      "description": "Determines which camera source to use for the vision query."
+    },
+    "mode": {
+      "type": "string",
+      "allowedValues": ["face_recognition", "image_query", "ocr"],
+      "description": "Specifies the type of vision query: face recognition, general image-based Q&A, or OCR text extraction."
+    },
+    "query": {
+      "type": "string",
+      "allowedValues": [],
+      "description": "The natural language query or specific instruction for the vision task. For example: 'Who is in front of the camera?', 'Read the text on the board', 'What object is near the laptop?'"
+    }
+  },
+  "group": "visionQuery",
+  "examples": [
+    "pc camera, face_recognition, who is sitting in front?",
+    "phone camera, ocr, read the text on the paper",
+    "cctv camera, image_query, is there a car parked outside?",
+    "laptop camera, face_recognition, identify the person",
+    "tab camera, image_query, what object is on the table?"
+  ]
+}

@@ -21,6 +21,7 @@ from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 import json
 import requests
 import yt_dlp
+from computer_vision_codes.cv_main import ComputerVisionActivation
 
 # Changable locations of applications
 # App paths, windows search locations, wled ips, any wled segment map, join api key and device id's, contact list,  
@@ -436,10 +437,10 @@ class HomeController:
             "outdoor light":     ("outside", "relay2"),
             "outdoor camera":    ("outside", "relay4"),
 
-            "home theater":      ("work", "relay1"),
+            "main led":          ("work", "relay1"),
             "pc":                ("work", "relay2"),
-            "soldering iron":    ("work", "relay3"),
-            "main led":          ("work", "relay4"),
+            "home theater":      ("work", "relay3"),
+            "soldering iron":    ("work", "relay4"),
             "raspberry pi":      ("work", "relay5")
         }
 
@@ -587,16 +588,13 @@ class LEDStripController:
         except Exception as e:
             print(f"❌ Exception in WLED request: {e}")
 
-class ComputerVisionActivation:
-    def __init__(self):
-        pass   
-
 class CommandExecutor:
     def __init__(self):
         self.home_controller = HomeController()
         self.led_controller = LEDStripController()
         self.windows_automation = WindowsAutomation()
         self.communication_automation = CommunicationAutomation()
+        self.cva = ComputerVisionActivation()
 
         self.function_map = {
             "HomeControl": self.execute_home_control,
@@ -610,7 +608,9 @@ class CommandExecutor:
             "GetDeviceInfo": self.execute_device_info,
             "AdjustSetting": self.execute_adjust_setting,
             "Call":self.execute_call,
-            "Message": self.execute_message
+            "Message": self.execute_message,
+            "ComputerVisionMode": self.execute_computer_vision,
+            "VisionQueryMode": self.execute_vision_quary
             
         }
 
@@ -732,10 +732,37 @@ class CommandExecutor:
             "device": args["device"]
         }
         await self.communication_automation.Message(**formatted_args)
+    
+    async def execute_vision_quary(self, args:dict):
+        formatted_args = {
+            "camera_selection": args["camera_selection"],
+            "mode": args["mode"],
+            "query": args["query"]
+        }
+        result = self.cva.vision_quary_mode(**formatted_args)
+        return result
+    
+    async def execute_computer_vision(self, args:dict):
+        formatted_args = {
+            "camera_selection": args["camera_selection"],
+            "mode": args["mode"],
+            "state": args["state"]
+        }
+        await asyncio.to_thread(self.cva.computer_vision_mode, **formatted_args)
+        # self.cva.computer_vision_mode(**formatted_args)
 
 if __name__ == "__main__":
     wa = WindowsAutomation()
     ca = CommunicationAutomation()
     hm = HomeController()
     lc = LEDStripController()
-    print(asyncio.run(ca.Call("ma","sim","voice","phone")))
+    # cva = ComputerVisionActivation()
+    ca = CommandExecutor()
+    print(asyncio.run(ca.execute([{
+        "functionName": "ComputerVisionMode",
+        "arguments": {
+            "camera_selection": "pc",
+            "mode": "hand mouse",
+            "state": "activate"
+        }
+    }])))

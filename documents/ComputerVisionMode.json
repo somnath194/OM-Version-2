@@ -1,0 +1,35 @@
+{
+  "functionName": "ComputerVisionMode",
+  "description": "Activates or deactivates specific computer vision features such as face recognition, OCR, or live camera feeds.",
+  "isAsync": false,
+  "arguments": {
+    "mode": {
+      "type": "string",
+      "allowedValues": [
+        "face recognition", "normal feed", "hand mouse", "objection detection"
+      ],
+      "description": "The computer vision feature/mode to control. For example: face recognition, normal feed, hand mouse mode, etc."
+    },
+    "state": {
+      "type": "string",
+      "allowedValues": ["activate", "deactivate"],
+      "description": "Determines whether to activate or deactivate the selected computer vision feature."
+    },
+    "camera_selection": {
+      "type": "string",
+      "allowedValues": ["pc", "phone", "tab", "laptop", "cctv"],
+      "description": "Determines which camera to select for computer vision feature."
+    }
+  },
+
+  "group": "visionControl",
+  "examples": [
+    "activate face recognition",
+    "deactivate pc camera feed",
+    "turn on hand mouse mode",
+    "show me pc camera feed",
+    "activate objection detection mode",
+    "deactivate phone camera feed",
+    "show me the cctv data"
+  ]
+}

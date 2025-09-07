@@ -10,7 +10,7 @@ Assistant.setProperty('rate', 190)
 # Blocking speak function
 def speak(audio):
     print("   ")
-    print(f": {audio}")
+    print(f":{audio}")
     Assistant.say(audio)
     Assistant.runAndWait()
 
