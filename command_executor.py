@@ -44,8 +44,8 @@ APP_WITH_PATH = {
 WLED_IP = "192.168.1.5"
 BACK_WLED_IP = "192.168.1.6"
 
-join_device_id = "c6a07d0b1b9e470eb7181498d7eb8d49" #phone
-join_api_key = "8680fb0ccc1249908d265c378ea0e167"
+join_device_id = "your join device id" #phone
+join_api_key = "your join api key"
 
 SEGMENT_MAP = {
     "front almary": 1,
@@ -105,6 +105,7 @@ class WindowsAutomation:
             if control_type == "open":
                 open_app_url = f"https://joinjoaomgcd.appspot.com/_ah/api/messaging/v1/sendPush?apikey={self.join_api_key}&app={app_name}&deviceId={self.join_device_id}"
                 requests.get(open_app_url)
+                print("app opened")
 
     async def control_website(self, website_url, device):
         if device == "pc":
@@ -346,10 +347,10 @@ class WindowsAutomation:
 
 class CommunicationAutomation:
     def __init__(self):
-        with open('contacts_10digit.json', "r") as f:
-            self.contact_list = json.load(f)
-        self.join_device_id = "c6a07d0b1b9e470eb7181498d7eb8d49" #phone
-        self.join_api_key = "8680fb0ccc1249908d265c378ea0e167" 
+        # with open('contacts_10digit.json', "r") as f:
+        #     self.contact_list = json.load(f)
+        self.join_device_id = "your api key" #phone
+        self.join_api_key = "your join api key" 
 
     async def Call(self, person_name, call_media, call_type, device):
         try:
@@ -406,14 +407,15 @@ class CommunicationAutomation:
             requests.get(call_url)
 
     async def get_number(self, name):
-        choices = list(self.contact_list.keys())
-        result = process.extractOne(name, choices, score_cutoff=50)
-        if result:
-            match, score, _ = result
-            number = self.contact_list[match]
-            return number, match
-        else:
-            return None # No match found
+        # choices = list(self.contact_list.keys())
+        # result = process.extractOne(name, choices, score_cutoff=50)
+        # if result:
+        #     match, score, _ = result
+        #     number = self.contact_list[match]
+        #     return number, match
+        # else:
+        #     return None # No match found
+        pass
 
 class HomeController:
     def __init__(self, mqtt_server="broker.mqtt.cool"):
@@ -421,9 +423,9 @@ class HomeController:
         self.mqtt_server = mqtt_server
 
         self.topic_map = {
-            "bedroom": "somn194_control/bedroom_appliance",
-            "outside": "somn194_control/outside_appliance",
-            "work": "somn194_control/work_appliance"
+            "bedroom": "your_bedroom_topic",
+            "outside": "your_outside_topic",
+            "work": "your_work_topic"
         }
 
         self.device_relay_map = {
@@ -758,11 +760,6 @@ if __name__ == "__main__":
     lc = LEDStripController()
     # cva = ComputerVisionActivation()
     ca = CommandExecutor()
-    print(asyncio.run(ca.execute([{
-        "functionName": "ComputerVisionMode",
-        "arguments": {
-            "camera_selection": "pc",
-            "mode": "hand mouse",
-            "state": "activate"
-        }
-    }])))
+    
+    asyncio.run(wa.control_application("chrome","open","phone"))
+    
