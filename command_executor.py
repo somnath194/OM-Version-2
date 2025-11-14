@@ -65,8 +65,8 @@ class WindowsAutomation:
         devices = AudioUtilities.GetSpeakers()
         interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         self.volume = cast(interface, POINTER(IAudioEndpointVolume))
-        self.join_device_id = "c6a07d0b1b9e470eb7181498d7eb8d49" # phone
-        self.join_api_key = "8680fb0ccc1249908d265c378ea0e167"
+        self.join_device_id = "" # phone
+        self.join_api_key = ""
 
     async def control_application(self, app_name, control_type, device):
         app = self.get_best_app_match(app_name)
